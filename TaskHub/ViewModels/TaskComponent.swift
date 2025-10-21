@@ -1,18 +1,44 @@
-//
-//  TaskComponent.swift
-//  TaskHub
-//
-//  Created by Marcos Tito on 20/10/25.
-//
-
 import SwiftUI
 
 struct TaskComponent: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            // Fondo del componente
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.component)
+                .shadow(radius: 10)
+            
+            // Contenido dentro del rectángulo
+            VStack {
+                // Título arriba izquierda
+                HStack {
+                    Text("Task")
+                        .font(.title2)
+                        .bold()
+                        .foregroundColor(.text)
+                    Spacer()
+                }
+
+                Spacer()
+
+                // Descripción abajo izquierda
+                HStack {
+                    Text("Descripción de la tarea o algo similar")
+                        .font(.subheadline)
+                        .foregroundColor(.text)
+                        .multilineTextAlignment(.leading)
+                    Spacer()
+                }
+            }
+            .padding(20)
+        }
+        .frame(width: 250, height: 250)
     }
 }
 
 #Preview {
-    TaskComponent()
+    ZStack {
+        Color.backgroundApp.ignoresSafeArea()
+        TaskComponent()
+    }
 }
