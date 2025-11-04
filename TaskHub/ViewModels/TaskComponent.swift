@@ -1,33 +1,50 @@
+//
+//  TaskComponent.swift
+//  TaskHub
+//
+//  Created by Marcos Tito
+//
+
 import SwiftUI
 
 struct TaskComponent: View {
+    let name: String?
+    let desc: String?
+    let date: Date?
+
+    init(name: String?, desc: String? = nil, date: Date? = nil) {
+        self.name = name
+        self.desc = desc
+        self.date = date
+    }
+
     var body: some View {
         ZStack {
-            // Fondo del componente
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color.component)
-                .shadow(radius: 10)
-            
-            // Contenido dentro del rectángulo
-            VStack {
-                // Título arriba izquierda
-                HStack {
-                    Text("Task")
-                        .font(.title2)
-                        .bold()
-                        .foregroundColor(.text)
-                    Spacer()
+                .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 4)
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text(name ?? "Tarea sin título")
+                    .font(.title3)
+                    .bold()
+                    .foregroundColor(.text)
+                    .multilineTextAlignment(.leading)
+
+                if let desc = desc, !desc.isEmpty {
+                    Text(desc)
+                        .font(.subheadline)
+                        .foregroundColor(.text.opacity(0.8))
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(3)
                 }
 
                 Spacer()
 
-                // Descripción abajo izquierda
-                HStack {
-                    Text("Descripción de la tarea o algo similar")
-                        .font(.subheadline)
-                        .foregroundColor(.text)
-                        .multilineTextAlignment(.leading)
-                    Spacer()
+                if let date = date {
+                    Text(date.formatted(date: .abbreviated, time: .shortened))
+                        .font(.caption)
+                        .foregroundColor(.gray)
                 }
             }
             .padding(20)
@@ -36,9 +53,36 @@ struct TaskComponent: View {
     }
 }
 
-#Preview {
-    ZStack {
-        Color.backgroundApp.ignoresSafeArea()
-        TaskComponent()
+#if DEBUG
+struct TaskComponent_Previews: PreviewProvider {
+    static var previews: some View {
+        ZStack {
+            Color.backgroundApp.ignoresSafeArea()
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 20) {
+                    TaskComponent(
+                        name: "Diseñar la vista principal",
+                        desc: "Definir colores pastel y ajustar la navegación",
+                        date: Date()
+                    )
+
+                    TaskComponent(
+                        name: "Revisar Core Data",
+                        desc: "Probar la persistencia y el fetch de tareas.",
+                        date: Date().addingTimeInterval(-3600)
+                    )
+
+                    TaskComponent(
+                        name: "Publicar la versión inicial",
+                        desc: "Enviar build a TestFlight y validar con usuarios.",
+                        date: Date().addingTimeInterval(86400)
+                    )
+                }
+                .padding(20)
+            }
+        }
+        .previewLayout(.sizeThatFits)
     }
 }
+#endif
