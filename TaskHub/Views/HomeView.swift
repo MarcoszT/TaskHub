@@ -14,6 +14,8 @@ struct HomeView: View {
     @State private var isListView = false
     @State private var selectedTask: TaskHubItem? = nil
     @State private var navigateToEdit = false
+    @State private var showDeleteAlert = false
+    @State private var taskToDelete: TaskHubItem? = nil
 
     var body: some View {
         ZStack {
@@ -82,9 +84,8 @@ struct HomeView: View {
                                     if selectedTask == task {
                                         HStack(spacing: 12) {
                                             Button {
-                                                deleteItem(task, in: context)
-                                                tasks = getAllItems(in: context)
-                                                selectedTask = nil
+                                                taskToDelete = task
+                                                showDeleteAlert = true
                                             } label: {
                                                 Image(systemName: "trash")
                                                     .foregroundColor(.white)
@@ -137,13 +138,11 @@ struct HomeView: View {
                                         }
                                     }
 
-                                    // ✅ Botones centrados sobre el componente
                                     if selectedTask == task {
                                         HStack(spacing: 30) {
                                             Button {
-                                                deleteItem(task, in: context)
-                                                tasks = getAllItems(in: context)
-                                                selectedTask = nil
+                                                taskToDelete = task
+                                                showDeleteAlert = true
                                             } label: {
                                                 Image(systemName: "trash")
                                                     .font(.title2)
@@ -203,6 +202,21 @@ struct HomeView: View {
         }
         .onAppear {
             tasks = getAllItems(in: context)
+        }
+        // ✅ Alerta de confirmación para eliminar
+        .alert("¿Eliminar tarea?", isPresented: $showDeleteAlert) {
+            Button("Cancelar", role: .cancel) {
+                taskToDelete = nil
+            }
+            Button("Eliminar", role: .destructive) {
+                if let task = taskToDelete {
+                    deleteItem(task, in: context)
+                    tasks = getAllItems(in: context)
+                    selectedTask = nil
+                }
+            }
+        } message: {
+            Text("Esta acción no se puede deshacer.")
         }
     }
 }
